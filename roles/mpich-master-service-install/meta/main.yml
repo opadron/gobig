@@ -1,0 +1,20 @@
+---
+
+dependencies:
+  - role: mpich-variables
+  - role: upstart
+    name: mpich-master
+    user: "{{ mpich_user }}"
+    group: "{{ mpich_group }}"
+    description: MPICH Message Passing Ring Master Service
+    command: >
+        "{{ mpich_install_root }}/bin/mpd"
+        --noconsole
+        --debug
+        "--ifhn={{ hostvars[inventory_hostname]
+                           ['ansible_' + mpich_net_interface]
+                           ['ipv4']
+                           ['address'] }}"
+        "--listenport={{ mpich_master_port }}"
+    when: do_install|bool
+

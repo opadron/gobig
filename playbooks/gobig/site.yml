@@ -20,6 +20,8 @@
         mesos_master_ansible_group: MM
         zookeeper_ansible_group: ZK
         state: present
+      - role: mpich-install
+        mpich_master_ansible_group: MM
 
   - hosts: HN
     roles:
@@ -45,10 +47,24 @@
         zookeeper_ansible_group: ZK
         mesos_master_ansible_group: MM
         state: started
+      - role: mpich-master
+        mpich_master_ansible_group: MM
+        state: started
 
   - hosts: MS
     roles:
       - role: mesos-slave
+        zookeeper_ansible_group: ZK
+        mesos_master_ansible_group: MM
+        state: started
+      - role: mpich-slave
+        mpich_master_ansible_group: MM
+        state: started
+
+  - hosts: SP
+    roles:
+      - role: spark
+        hdfs_namenode_ansible_group: HN
         zookeeper_ansible_group: ZK
         mesos_master_ansible_group: MM
         state: started

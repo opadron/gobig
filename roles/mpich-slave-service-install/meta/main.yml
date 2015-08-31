@@ -1,0 +1,19 @@
+---
+
+dependencies:
+  - role: mpich-variables
+  - role: upstart
+    name: mpich-slave
+    user: "{{ mpich_user }}"
+    group: "{{ mpich_group }}"
+    description: MPICH Message Passing Ring Slave Service
+    command: >
+        "{{ mpich_install_root }}/bin/mpd"
+        --debug
+        "--host={{ hostvars[groups[mpich_master_ansible_group][0]]
+                           ['ansible_' + mpich_net_interface]
+                           ['ipv4']
+                           ['address'] }}"
+        "--port={{ mpich_master_port }}"
+    when: do_install|bool
+

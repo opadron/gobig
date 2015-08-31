@@ -1,0 +1,8 @@
+---
+
+dependencies:
+  - role: mpich-variables
+  - role: mpich-install
+  - role: mpich-slave-service-install
+  - role: mpich-slave-service
+

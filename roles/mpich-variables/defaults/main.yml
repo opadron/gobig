@@ -1,0 +1,16 @@
+---
+
+    mpich_version: 1.2
+    mpich_install_root: ""
+
+    mpich_user: mpich
+    mpich_group: mpich
+    mpich_crypt_pass: ""
+    mpich_net_interface: eth0
+
+    mpich_data_root: ""
+    mpich_master_port: 10000
+
+    recompile: false
+    state: started
+

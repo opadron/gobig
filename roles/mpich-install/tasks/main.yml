@@ -1,0 +1,170 @@
+---
+
+  - name: mpich | deps | install
+    apt: name={{ item }} state=present update_cache=yes
+    with_items:
+      - adduser
+      - apt-utils
+      - blcr-dkms
+      - blcr-util
+      - build-essential
+      - gfortran
+      - gfortran-multilib
+      - hwloc-nox
+      - libcr-dev
+      - libcr0
+      - libgfortran-4.8-dev
+      - libgfortran3
+      - libhwloc-plugins
+      - libhwloc4
+      - python-setuptools
+      - python-dev
+      - ocl-icd-libopencl1
+      - opencl-icd
+      - openssh-client
+      - openssh-server
+      - rsync
+      - sudo
+      - tar
+      - gzip
+      - wget
+      - curl
+      - unzip
+    when: do_install|bool
+
+  - name: mpich | service | slave | stop
+    service:
+        name: mpich-slave
+        state: stopped
+    ignore_errors: true
+    when: stop_services|bool
+
+  - name: mpich | service | master | stop
+    service:
+        name: mpich-master
+        state: stopped
+    ignore_errors: true
+    when: stop_services|bool
+
+  - name: mpich | install root | delete
+    file:
+        path: "{{ mpich_install_root }}"
+        state: absent
+    when: remove_install_root|bool
+
+  - name: mpich | data root | delete
+    file:
+        path: "{{ mpich_data_root }}"
+        state: absent
+    when: remove_data_root|bool
+    with_items:
+      - master
+      - slave
+
+  - name: mpich | install parent | create
+    file:
+        path: "{{ mpich_install_parent }}"
+        state: directory
+    when: do_install|bool
+
+  - name: mpich | data root | create
+    file:
+        path: "{{ mpich_data_root }}"
+        state: directory
+        mode: 0755
+    when: do_install|bool
+
+  - name: mpich | data root | owner | set
+    file:
+        path: "{{ mpich_data_root }}"
+        state: directory
+        group: "{{ mpich_group }}"
+        owner: "{{ mpich_user }}"
+        mode: 0775
+    when: do_install|bool
+
+  - name: mpich | data root | subdirs | create
+    file:
+        path: "{{ mpich_data_root }}/{{ item }}"
+        state: directory
+        mode: 0755
+    when: do_install|bool
+    with_items:
+      - master
+      - slave
+
+  - name: mpich | data root | subdirs | owner | set
+    file:
+        path: "{{ mpich_data_root }}/{{ item }}"
+        state: directory
+        group: "{{ mpich_group }}"
+        owner: "{{ mpich_user }}"
+        mode: 0775
+    when: do_install|bool
+    with_items:
+      - master
+      - slave
+
+  - name: mpich | pkg | download
+    get_url:
+        url: "http://www.mpich.org/static/downloads/\
+              {{ mpich_version }}/\
+              mpich2-{{ mpich_version }}.tar.gz"
+        dest: "{{ mpich_install_parent }}/\
+               mpich2-{{ mpich_version }}.tar.gz"
+        force: no
+    when: create_install_root|bool
+
+  - name: mpich | pkg | unpack
+    unarchive:
+        copy: no
+        creates: "{{ mpich_install_parent }}/\
+                  mpich2-{{ mpich_version }}"
+        dest: "{{ mpich_install_parent }}"
+        mode: 0755
+        src: "{{ mpich_install_parent }}/\
+              mpich2-{{ mpich_version }}.tar.gz"
+    when: create_install_root|bool
+
+  - name: mpich | install dir | create
+    file:
+        path: "{{ mpich_install_root }}"
+        mode: 0755
+        state: directory
+    when: do_compile|bool
+
+  - name: mpich | pkg | unpack | rename
+    shell: >
+        mv
+        "{{ mpich_install_parent }}/mpich2-{{ mpich_version }}"
+        "{{ mpich_install_root }}/build"
+    when: create_install_root|bool
+
+  - name: mpich | build | configure
+    shell: >
+        ./configure "--prefix={{ mpich_install_root }}"
+    args:
+        chdir: "{{ mpich_install_root }}/build"
+    when: do_compile|bool
+
+  - name: mpich | build | compile
+    shell: make
+    args:
+        chdir: "{{ mpich_install_root }}/build"
+    when: do_compile|bool
+
+  - name: mpich | build | install
+    shell: make install
+    args:
+        chdir: "{{ mpich_install_root }}/build"
+    when: do_compile|bool
+
+  - name: mpich | install root | owner | set
+    file:
+        recurse: yes
+        path: "{{ mpich_install_root }}"
+        state: directory
+        group: "{{ mpich_group }}"
+        owner: "{{ mpich_user }}"
+    when: do_install|bool
+

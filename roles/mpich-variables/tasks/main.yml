@@ -1,0 +1,56 @@
+---
+
+  - name: mpich | service | logic flags | compute
+    set_fact:
+        remove_data_root: "{{ state == 'absent' }}"
+        remove_install_root: "{{ state == 'absent' }}"
+        stop_services: "{{ state == 'absent' }}"
+        do_install: >
+            {{ state == "present" or state == "stopped" or
+               state == "started" or state == "restarted" or
+               state == "reloaded" }}
+        notify_services: >
+            {{ state == "stopped" or state == "started"
+            or state == "restarted" or state == "reloaded" }}
+
+  - name: mpich | install root | default | set
+    set_fact:
+        mpich_install_root: /opt/mpich/{{ mpich_version }}
+    when: mpich_install_root == ""
+
+  - name: mpich | install root | parent | probe
+    shell: dirname "{{ mpich_install_root }}"
+    register: parent_probe
+
+  - name: mpich | install root | parent | record
+    set_fact:
+        mpich_install_parent: "{{ parent_probe.stdout }}"
+
+  - name: mpich | data root | default | set
+    set_fact:
+        mpich_data_root: /data/mpich/{{ mpich_version }}
+    when: mpich_data_root == ""
+
+  - name: mpich | install root | probe
+    stat:
+        path: "{{ mpich_install_root }}"
+    register: install_root_probe
+
+  - name: mpich | install root | flag | record
+    set_fact:
+        create_install_root: >
+            {{ (do_install|bool) and
+                (not (install_root_probe.stat.exists|bool)) }}
+
+  - name: mpich | build | probe
+    stat:
+        path: "{{ mpich_install_root }}/build"
+    when: do_install|bool
+    register: build_probe
+
+  - name: mpich | build | flag | compute
+    set_fact:
+        do_compile: >
+            {{ (do_install|bool) and
+                (not (build_probe.stat.exists|bool) or (recompile|bool)) }}
+
