@@ -27,7 +27,7 @@ find_program(VAGRANT_EXECUTABLE vagrant)
 find_program(ANSIBLE_PLAYBOOK_EXECUTABLE "ansible-playbook")
 
 if(BUILD_TESTING)
-    include(testing/testlib.cmake)
+    include(${PROJECT_SOURCE_DIR}/testing/testlib.cmake)
     add_subdirectory(testing)
 endif()
 
