@@ -15,12 +15,13 @@ before_install:
 
   - sudo apt-get update
   - sudo apt-get install -qyy python-dev python-pip vagrant
-  - "sudo -H pip install ansible             \
-                         boto                \
-                         coverage            \
-                         flake8              \
-                         pep8                \
-                         flake8-docstrings   \
+  - sudo -H pip install --upgrade pip
+  - "sudo -H pip install ansible \
+                         boto \
+                         coverage \
+                         flake8 \
+                         pep8 \
+                         flake8-docstrings \
                          flake8-blind-except"
 
   - pushd "${HOME}"
@@ -36,8 +37,11 @@ before_install:
   - echo "$BOTO_VERSION"
   - cmake --version
   - export ANSIBLE_VERSION="$( ansible --version | head -n 1 | cut -d\  -f 2 )"
+  - echo "$ANSILBE_VERSION"
   - export PYTHON_VERSION="${TRAVIS_PYTHON_VERSION:0:1}"
+  - echo "$PYTHON_VERSION"
   - export BRANCH="$TRAVIS_BRANCH"
+  - echo "$BRANCH"
 install:
   - true
 script:
@@ -49,5 +53,4 @@ script:
   - ctest -VV -S ../testing/ci.cmake || true
   - if [ -f test_failed ] ; then false ; fi
   - cd ..
-  - git fetch --unshallow
 

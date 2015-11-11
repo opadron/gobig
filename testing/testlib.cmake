@@ -1,4 +1,16 @@
 
+macro(join_arguments var)
+    set(_var)
+
+    foreach(_v ${${var}})
+        set(_var "${_var} ${_v}")
+    endforeach(_v ${${var}})
+
+    string(STRIP ${_var} _var)
+    set(${var} ${_var})
+
+endmacro(join_arguments)
+
 set(py_coverage_rc "${PROJECT_BINARY_DIR}/testing/coveragerc")
 set(flake8_config "${PROJECT_SOURCE_DIR}/testing/flake8.cfg")
 set(coverage_html_dir "${PROJECT_BINARY_DIR}/py_coverage")
@@ -105,21 +117,25 @@ function(add_ansible_test alias mode alias2 test_case)
     get_property(pod_file TEST vagrant_meta_${pod_alias}
                  PROPERTY VAGRANT_POD_FILE)
 
+    set(site_yml "${PROJECT_SOURCE_DIR}/testing/cases/${test_case}/site.yml")
+    set(unit_yml "${PROJECT_SOURCE_DIR}/testing/cases/${test_case}/unit.yml")
+
+    set(inventory "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/ansible")
+    set(inventory "${inventory}/inventory/vagrant_ansible_inventory"
+
     if(PYTHON_COVERAGE)
         add_test(NAME ansible_static_${alias}
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${PYTHON_COVERAGE_EXECUTABLE}"
                          run -p --append "--rcfile=${py_coverage_rc}"
-                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins" -v
+                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins"
                          "${ANSIBLE_PLAYBOOK_EXECUTABLE}" --syntax-check
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                            "${test_case}/site.yml")
+                             "${site_yml}")
     else()
         add_test(NAME ansible_static_${alias}
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${ANSIBLE_PLAYBOOK_EXECUTABLE}" --syntax-check
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                            "${test_case}/site.yml")
+                             "${site_yml}")
     endif()
 
     if(PYTHON_COVERAGE)
@@ -127,22 +143,18 @@ function(add_ansible_test alias mode alias2 test_case)
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${PYTHON_COVERAGE_EXECUTABLE}"
                          run -p --append "--rcfile=${py_coverage_rc}"
-                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins" -v
+                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins"
                          "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
-                         --become -u vagrant
-                         -i "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/"
-                            "ansible/inventory/vagrant_ansible_inventory"
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                            "${test_case}/site.yml")
+                             --become -u vagrant
+                             -i "${inventory}"
+                             "${site_yml}")
     else()
         add_test(NAME ansible_provision_${alias}
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
                          --become -u vagrant
-                         -i "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/"
-                            "ansible/inventory/vagrant_ansible_inventory"
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                            "${test_case}/site.yml")
+                         -i "${inventory}"
+                         "${site_yml}")
     endif()
 
 
@@ -162,11 +174,9 @@ function(add_ansible_test alias mode alias2 test_case)
              WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
              COMMAND "${PROJECT_SOURCE_DIR}/testing/test-idempotency"
                      "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
-                     --become -u vagrant
-                     -i "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/"
-                        "ansible/inventory/vagrant_ansible_inventory"
-                     "${PROJECT_SOURCE_DIR}/testing/cases/"
-                         "${test_case}/site.yml")
+                         --become -u vagrant
+                         -i "${inventory}"
+                         "${site_yml}")
 
     if(PYTHON_COVERAGE)
         set_property(TEST ansible_idempotency_${alias} PROPERTY ENVIRONMENT
@@ -187,22 +197,18 @@ function(add_ansible_test alias mode alias2 test_case)
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${PYTHON_COVERAGE_EXECUTABLE}"
                          run -p --append "--rcfile=${py_coverage_rc}"
-                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins" -v
+                         "--source=${PROJECT_SOURCE_DIR}/filter_plugins"
                          "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
-                         --become -u vagrant
-                         -i "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/"
-                            "ansible/inventory/vagrant_ansible_inventory"
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                             "${test_case}/unit.yml")
+                             --become -u vagrant
+                             -i "${inventory}"
+                             "${unit_yml}")
     else()
         add_test(NAME ansible_unit_${alias}
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                  COMMAND "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
                          --become -u vagrant
-                         -i "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/"
-                            "ansible/inventory/vagrant_ansible_inventory"
-                         "${PROJECT_SOURCE_DIR}/testing/cases/"
-                             "${test_case}/unit.yml")
+                         -i "${inventory}"
+                         "${unit_yml}")
     endif()
 
     set_property(TEST ansible_unit_${alias} APPEND PROPERTY

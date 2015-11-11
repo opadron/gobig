@@ -1,9 +1,11 @@
 #! /usr/bin/env bash
 
 if [ -n "$PYTHON_COVERAGE_EXECUTABLE" ] ; then
+    ( set -x
     "$PYTHON_COVERAGE_EXECUTABLE" run -p --append "--rcfile=${COVERAGE_RC}" \
-        "--source=${PROJECT_SOURCE_DIR}/filter_plugins" -v "$@"
+        "--source=${PROJECT_SOURCE_DIR}/filter_plugins" -v "$@" )
 else
-    "$@"
-fi | grep -q 'changed=0.*failed=0'
+    ( set -x
+    "$@" )
+fi | tee /dev/stdout | grep -q 'changed=0.*failed=0'
 
