@@ -1,0 +1,91 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+Vagrant.configure(2) do |config|
+    config.vm.box = ENV["VAGRANT_BOX"] || "ubuntu/trusty64"
+    nc = YAML.load_file(ENV["VAGRANT_POD_FILE"])
+
+    # Ensure nodes and ansible config sections exist
+    nc['nodes'] ||= {}
+    nc['ansible'] ||= {}
+
+    # Set default domain
+    domain = nc["domain"] || "testing.ci"
+
+    groups = {}
+
+    # node counter -- incremented manually because configs are lazy loaded
+    counter = 0
+
+    # Loop over node definitions
+    nc['nodes'].each do |name, params|
+        index = counter
+
+        params['roles'].each do |role|
+            groups[role] ||= []
+            groups[role] << name
+        end
+
+        params['ports'] ||= []
+
+        config.vm.define name do |node|
+            node.vm.box = params["box"] || config.vm.box
+
+            params["ports"].each do |id, ports|
+                guest, host = ports.split(":")
+                node.vm.network :forwarded_port,  \
+                                guest: guest,     \
+                                host: host,       \
+                                id: id
+            end
+
+            node.vm.network :forwarded_port,    \
+                            guest: 22,          \
+                            host: 2220 + index, \
+                            id: "ssh"
+
+            node.vm.network "private_network",          \
+                            ip: "192.168.33.2#{index}", \
+                            netmask: "255.255.255.0"
+
+            node.vm.hostname = "#{name}.#{domain}"
+
+            node.vm.provider "virtualbox" do |vb|
+                vb.memory = params["memory"] || 2048
+                vb.cpus = params["cpus"] || 2
+
+                if params.has_key?("mount")
+                    mount = params['mount']
+                    if mount.kind_of?(Array)
+                        mount.each do |mnt|
+                            config.vm.synced_folder mnt['src'],  \
+                                                    mnt['dest'], \
+                                                    create: true
+                        end
+                    else
+                        config.vm.synced_folder mount['src'],  \
+                                                mount['dest'], \
+                                                create: true
+                        end
+                    end
+                end
+
+            # only provision after all nodes have been spun up
+            if index == nc['nodes'].length - 1
+                groups['all:children'] = groups.keys
+
+                config.vm.provision "ansible" do |ansible|
+                    ansible.playbook = ENV["ANSIBLE_PLAYBOOK"]
+                    ansible.groups = groups
+                    ansible.sudo = true
+                    ansible.limit = 'all'
+                end
+            end
+        end
+
+        counter += 1
+    end
+end
+

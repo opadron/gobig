@@ -1,0 +1,8 @@
+
+hosts: all
+become: false
+connection: local
+tasks:
+  - name: what is your NAME!?
+    shell: echo {{ inventory_hostname }}
+
