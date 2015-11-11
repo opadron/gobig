@@ -39,7 +39,7 @@ before_install:
   - echo "$BOTO_VERSION"
   - cmake --version
   - export ANSIBLE_VERSION="$( ansible --version | head -n 1 | cut -d\  -f 2 )"
-  - echo "$ANSILBE_VERSION"
+  - echo "$ANSIBLE_VERSION"
   - export PYTHON_VERSION="${TRAVIS_PYTHON_VERSION:0:1}"
   - echo "$PYTHON_VERSION"
   - export BRANCH="$TRAVIS_BRANCH"

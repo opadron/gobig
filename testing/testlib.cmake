@@ -103,7 +103,7 @@ function(add_ansible_test alias mode alias2 test_case)
     set(unit_yml "${PROJECT_SOURCE_DIR}/testing/cases/${test_case}/unit.yml")
 
     set(inventory "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/ansible")
-    set(inventory "${inventory}/inventory/vagrant_ansible_inventory"
+    set(inventory "${inventory}/inventory/vagrant_ansible_inventory")
 
     if(PYTHON_COVERAGE)
         add_test(NAME ansible_static_${alias}
