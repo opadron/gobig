@@ -15,7 +15,8 @@ before_install:
 
   - sudo apt-get update
   - sudo apt-get install -qyy python-dev python-pip vagrant
-  - sudo -H pip install --upgrade pip
+  - sudo -H pip install -U pip
+  - sudo -H pip install -U setuptools
   - "sudo -H pip install -U ansible \
                             boto \
                             coverage \
