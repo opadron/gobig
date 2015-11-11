@@ -14,16 +14,16 @@ before_install:
   - vmstat
 
   - sudo apt-get update
-  - sudo apt-get install -qyy python-dev python-pip vagrant
-  - sudo -H pip install -U pip
-  - sudo -H pip install -U setuptools
-  - "sudo -H pip install -U ansible \
-                            boto \
-                            coverage \
-                            flake8 \
-                            pep8 \
-                            flake8-docstrings \
-                            flake8-blind-except"
+  - sudo apt-get install -qyy vagrant
+  - pip install -U pip
+  - pip install -U setuptools
+  - "pip install -U ansible \
+                    boto \
+                    coverage \
+                    flake8 \
+                    pep8 \
+                    flake8-docstrings \
+                    flake8-blind-except"
 
   - pushd "${HOME}"
   - "curl -L \"http://cmake.org/files/v3.1/cmake-3.1.0-Linux-x86_64.tar.gz\" | \
