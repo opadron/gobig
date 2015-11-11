@@ -1,16 +1,16 @@
 nodes:
   n0:
-    memory: 1024
+    memory: 512
     cpus: 2
     roles:
       - namenodes
   n1:
-    memory: 1024
+    memory: 512
     cpus: 2
     roles:
       - datanodes
   n2:
-    memory: 1024
+    memory: 512
     cpus: 2
     roles:
       - datanodes

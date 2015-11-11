@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+set -e
+cd "$( dirname "$( dirname "$( dirname "$0" )" )" )"
+
+echo ""
+echo "RUNNING TEST SUITE"
+echo ""
+
+source "dev/include/test-env.bash"
+
+cd _build
+ctest "$@" -DPYTHON_COVERAGE:BOOL="$PYTHON_COVERAGE" -V \
+    -S "$CTEST_SOURCE_DIRECTORY/dev/testing/ci.cmake" || true
+if [ -f test_failed ] ; then exit 1; fi
+

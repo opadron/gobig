@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 2.8.0)
 
 project(GoBig NONE)
 
@@ -23,12 +23,16 @@ if(PYTHON_STATIC_ANALYSIS)
     find_program(FLAKE8_EXECUTABLE flake8)
 endif()
 
-find_program(VAGRANT_EXECUTABLE vagrant)
+set(FULL_VIRTUALIZATION "$ENV{FULL_VIRTUALIZATION}")
+
+if(FULL_VIRTUALIZATION)
+    find_program(VAGRANT_EXECUTABLE vagrant)
+endif()
+
 find_program(ANSIBLE_PLAYBOOK_EXECUTABLE "ansible-playbook")
 
 if(BUILD_TESTING)
-    # include(${PROJECT_SOURCE_DIR}/testing/testlib.cmake)
-    include(testing/testlib.cmake)
-    add_subdirectory(testing)
+    include(dev/testing/testlib.cmake)
+    add_subdirectory(dev/testing)
 endif()
 

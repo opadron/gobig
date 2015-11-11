@@ -1,0 +1,32 @@
+#! /usr/bin/env bash
+
+set -e
+cd "$( dirname "$( dirname "$( dirname "$0" )" )" )"
+
+echo ""
+echo "CONFIGURING PROJECT"
+echo ""
+
+source "dev/include/test-env.bash"
+
+echo "[python version]"
+python --version
+echo
+
+echo "[ansible version]"
+ansible --version
+echo
+
+echo "[cmake version]"
+cmake --version
+echo
+
+echo "[boto version]"
+python -c 'import boto; print("boto version %s" % boto.Version)'
+echo
+
+mkdir -p _build
+cd _build
+
+cmake .. -DPYTHON_COVERAGE:BOOL="$PYTHON_COVERAGE" "$@"
+

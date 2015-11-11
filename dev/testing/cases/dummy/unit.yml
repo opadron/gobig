@@ -3,6 +3,5 @@
   - hosts: all
     tasks:
       - name: dummy task
-        command: true
-        changed_when: false|bool
+        command: "true"
 

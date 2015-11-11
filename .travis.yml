@@ -3,56 +3,16 @@ language: python
 python:
   - "2.7"
 
-
 sudo: true
 
 compiler:
   - gcc
 
 before_install:
-  # show the memory state; this lets us more quickly determine when the
-  # travis environment is bad
-  - vmstat
-
-  - sudo apt-get update
-  - sudo apt-get install -qyy vagrant
-  - pip install -U pip
-  - pip install -U setuptools
-  - "pip install -U ansible \
-                    boto \
-                    coverage \
-                    flake8 \
-                    pep8 \
-                    flake8-docstrings \
-                    flake8-blind-except"
-
-  - pushd "${HOME}"
-  - "curl -L \"http://cmake.org/files/v3.1/cmake-3.1.0-Linux-x86_64.tar.gz\" | \
-     gunzip -c | tar x"
-  - cd cmake-*/bin && export PATH="${PWD}:${PATH}"
-  - popd
-
-  - python --version
-  - ansible --version
-  - "export BOTO_VERSION=\"$( \
-        python -c \"import boto; print('boto version %s' % boto.Version)\" )\""
-  - echo "$BOTO_VERSION"
-  - cmake --version
-  - export ANSIBLE_VERSION="$( ansible --version | head -n 1 | cut -d\  -f 2 )"
-  - echo "$ANSIBLE_VERSION"
-  - export PYTHON_VERSION="${TRAVIS_PYTHON_VERSION:0:1}"
-  - echo "$PYTHON_VERSION"
-  - export BRANCH="$TRAVIS_BRANCH"
-  - echo "$BRANCH"
+  - ./dev/scripts/setup-tests
 install:
   - true
 script:
-  - mkdir _build
-  - cd _build
-  - cmake ..
-  - export CTEST_SOURCE_DIRECTORY="$TRAVIS_BUILD_DIR"
-  - export CTEST_BINARY_DIRECTORY="$TRAVIS_BUILD_DIR/_build"
-  - ctest -VV -S ../testing/ci.cmake || true
-  - if [ -f test_failed ] ; then false ; fi
-  - cd ..
+  - ./dev/scripts/configure-project
+  - ./dev/scripts/run-tests
 
