@@ -95,15 +95,13 @@ function(add_vagrant_pod alias cfg)
 endfunction()
 
 function(add_ansible_test alias mode alias2 test_case)
-    if(mode EQUAL "TEST")
+    if(mode STREQUAL "TEST")
         get_property(pod_alias TEST ansible_meta_${alias2}
                      PROPERTY VAGRANT_POD)
-    elseif(mode EQUAL "POD")
-        message("POD MODE")
+    elseif(mode STREQUAL "POD")
         set(pod_alias ${alias2})
     endif()
 
-    message("POD ALIAS: ${pod_alias}")
     get_property(pod_file TEST vagrant_meta_${pod_alias}
                  PROPERTY VAGRANT_POD_FILE)
 
@@ -154,7 +152,7 @@ function(add_ansible_test alias mode alias2 test_case)
     set_property(TEST ansible_provision_${alias} APPEND PROPERTY
                  DEPENDS vagrant_up_${pod_alias})
 
-    if(mode EQUAL "TEST")
+    if(mode STREQUAL "TEST")
         set_property(TEST ansible_provision_${alias} APPEND PROPERTY
                      DEPENDS ansible_provision_${alias2})
     endif()
