@@ -1,16 +1,4 @@
 
-macro(join_arguments var)
-    set(_var)
-
-    foreach(_v ${${var}})
-        set(_var "${_var} ${_v}")
-    endforeach(_v ${${var}})
-
-    string(STRIP ${_var} _var)
-    set(${var} ${_var})
-
-endmacro(join_arguments)
-
 set(py_coverage_rc "${PROJECT_BINARY_DIR}/testing/coveragerc")
 set(flake8_config "${PROJECT_SOURCE_DIR}/testing/flake8.cfg")
 set(coverage_html_dir "${PROJECT_BINARY_DIR}/py_coverage")
@@ -23,12 +11,6 @@ endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/testing/coveragerc.in"
                "${py_coverage_rc}" @ONLY)
-
-if(WIN32)
-    set(_separator "\\;")
-else()
-    set(_separator ":")
-endif()
 
 function(testlib_init)
     if(PYTHON_COVERAGE)
