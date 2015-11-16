@@ -2,7 +2,7 @@
 
   - hosts: all
     tasks:
-      - name: dummy task
-        command: "true"
+      - name: command | hostname | run
+        command: "hostname"
         changed_when: false|bool
 
