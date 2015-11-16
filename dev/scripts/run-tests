@@ -1,11 +1,12 @@
 #! /usr/bin/env bash
 
-set -e
 cd "$( dirname "$( dirname "$( dirname "$0" )" )" )"
 
 echo ""
 echo "RUNNING TEST SUITE"
 echo ""
+
+set -e
 
 source "dev/include/test-env.bash"
 

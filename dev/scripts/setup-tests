@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 
-set -e
 cd "$( dirname "$( dirname "$( dirname "$0" )" )" )"
 
 echo ""
@@ -8,6 +7,8 @@ echo "PREPARING ENVIRONMENT"
 echo ""
 
 source "dev/include/test-env.bash"
+
+set -e
 
 $APT_SUDO apt-get update
 $APT_SUDO apt-get install -qyy python-dev python-pip cmake
