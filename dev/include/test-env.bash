@@ -12,7 +12,7 @@ if [ "$TRAVIS" '=' 'true' ] ; then
     echo "TRAVIS CI DETECTED"
     echo
 
-    check_set APT_SUDO sudo
+    check_set APT_SUDO "sudo -H"
     check_set PIP_SUDO ""
 
     check_set PYTHON_VERSION         "${TRAVIS_PYTHON_VERSION:0:1}"
@@ -36,6 +36,12 @@ else
         echo "ROOT DETECTED"
         check_set APT_SUDO ""
         check_set PIP_SUDO ""
+
+    # check for a python virtualenv
+    if [ -n "$VIRTUAL_ENV" ] ; then
+        echo "PYTHON VIRTUALENV DETECTED"
+        check_set PIP_SUDO ""
+    fi
 
     check_set APT_SUDO "sudo -H"
     check_set PIP_SUDO "sudo -H"
