@@ -59,9 +59,9 @@ else
     check_set PYTHON_COVERAGE     ON
 fi
 
-check_set BOTO_VERSION="$(
+check_set BOTO_VERSION "$(
     python -c "import boto; print(boto.Version)" 2>/dev/null )"
 
-check_set ANSIBLE_VERSION="$(
+check_set ANSIBLE_VERSION "$(
     ( ansible --version 2>/dev/null ) | head -n 1 | cut -d\  -f 2 )"
 
