@@ -3,7 +3,7 @@ check_set() {
     var="$1" ; shift
     val="$*"
 
-    if [ -z "$( eval 'echo "$'"$var"'"' )" ] ; then
+    if eval '[ -z "${'"$X"'+set}" ]' ; then
         export $var="$val"
     fi
 }
