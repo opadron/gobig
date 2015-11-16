@@ -14,7 +14,7 @@ if [ "$SKIP_APT" '=' '0' ] ; then
     $APT_SUDO apt-get update
     $APT_SUDO apt-get install -qyy python-dev python-pip cmake
     if [ "$FULL_VIRTUALIZATION" '=' "YES" ] ; then
-        $APT_SUDO apt-get install -qyy vagrant
+        $APT_SUDO apt-get install -qyy vagrant virtualbox
     fi
 fi
 
