@@ -10,11 +10,14 @@ source "dev/include/test-env.bash"
 
 set -e
 
-$APT_SUDO apt-get update
-$APT_SUDO apt-get install -qyy python-dev python-pip cmake
-if [ "$FULL_VIRTUALIZATION" '=' "YES" ] ; then
-    $APT_SUDO apt-get install -qyy vagrant
+if [ "$SKIP_APT" '=' '0' ] ; then
+    $APT_SUDO apt-get update
+    $APT_SUDO apt-get install -qyy python-dev python-pip cmake
+    if [ "$FULL_VIRTUALIZATION" '=' "YES" ] ; then
+        $APT_SUDO apt-get install -qyy vagrant
+    fi
 fi
+
 $PIP_SUDO pip install -U pip
 $PIP_SUDO pip install -U setuptools
 $PIP_SUDO pip install -U ansible             \
