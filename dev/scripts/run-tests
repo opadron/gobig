@@ -11,7 +11,7 @@ set -e
 source "dev/include/test-env.bash"
 
 cd _build
-ctest "$@" -DPYTHON_COVERAGE:BOOL="$PYTHON_COVERAGE" -V \
+ctest "$@" -DPYTHON_COVERAGE:BOOL="$PYTHON_COVERAGE" -VV \
     -S "$CTEST_SOURCE_DIRECTORY/dev/testing/ci.cmake" || true
 if [ -f test_failed ] ; then exit 1; fi
 
