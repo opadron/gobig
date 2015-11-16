@@ -26,11 +26,13 @@ if [ "$TRAVIS" '=' 'true' ] ; then
     check_set PYTHON_COVERAGE        OFF
 else
     # test to see if we are in a VM
-    if (ls -1 /dev/disk/by-id/ | grep -q VBOX &> /dev/null) ; then
-        echo "VIRTUALBOX DETECTED"
-        echo
-        check_set FULL_VIRTUALIZATION NO
-        check_set PYTHON_COVERAGE     OFF
+    if [ -d /dev/disk/by-id ] ; then
+        if (ls -1 /dev/disk/by-id/ | grep -q VBOX &> /dev/null) ; then
+            echo "VIRTUALBOX DETECTED"
+            echo
+            check_set FULL_VIRTUALIZATION NO
+            check_set PYTHON_COVERAGE     OFF
+        fi
     fi
 
     # check for root
