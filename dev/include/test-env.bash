@@ -31,8 +31,14 @@ else
         check_set PYTHON_COVERAGE     OFF
     fi
 
-    check_set APT_SUDO ""
-    check_set PIP_SUDO ""
+    # check for root
+    if [ "$USER" '=' 'root' ] ; then
+        echo "ROOT DETECTED"
+        check_set APT_SUDO ""
+        check_set PIP_SUDO ""
+
+    check_set APT_SUDO "sudo -H"
+    check_set PIP_SUDO "sudo -H"
 
     tmp="$( python --version 2>&1 | cut -d\  -f 2 )"
     check_set PYTHON_VERSION         "${tmp:0:1}"
