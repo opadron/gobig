@@ -3,7 +3,7 @@ check_set() {
     var="$1" ; shift
     val="$*"
 
-    if eval '[ -z "${'"$X"'+set}" ]' ; then
+    if eval '[ -z "${'"$var"'+set}" ]' ; then
         export $var="$val"
     fi
 }
@@ -36,6 +36,7 @@ else
         echo "ROOT DETECTED"
         check_set APT_SUDO ""
         check_set PIP_SUDO ""
+    fi
 
     # check for a python virtualenv
     if [ -n "$VIRTUAL_ENV" ] ; then
