@@ -1,4 +1,5 @@
 **/*.swp
 **/*.pyc
+.coverage
 .vagrant
 dev/vagrant.local.yml
