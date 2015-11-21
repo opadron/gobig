@@ -75,14 +75,11 @@ Vagrant.configure(2) do |config|
             # only provision after all nodes have been spun up
             if index == nc['nodes'].length - 1
                 groups['all:children'] = groups.keys
-
-                if ENV["ANSIBLE_PLAYBOOK"]
-                    config.vm.provision "ansible" do |ansible|
-                        ansible.playbook = ENV["ANSIBLE_PLAYBOOK"]
-                        ansible.groups = groups
-                        ansible.sudo = true
-                        ansible.limit = 'all'
-                    end
+                config.vm.provision "ansible" do |ansible|
+                    ansible.playbook = ENV["ANSIBLE_PLAYBOOK"] || "NULL"
+                    ansible.groups = groups
+                    ansible.sudo = true
+                    ansible.limit = 'all'
                 end
             end
 
@@ -110,14 +107,11 @@ Vagrant.configure(2) do |config|
             # only provision after all nodes have been spun up
             if index == nc['nodes'].length - 1
                 groups['all:children'] = groups.keys
-
-                if ENV["ANSIBLE_PLAYBOOK"]
-                    config.vm.provision "ansible" do |ansible|
-                        ansible.playbook = ENV["ANSIBLE_PLAYBOOK"]
-                        ansible.groups = groups
-                        ansible.sudo = true
-                        ansible.limit = 'all'
-                    end
+                config.vm.provision "ansible" do |ansible|
+                    ansible.playbook = ENV["ANSIBLE_PLAYBOOK"] || "NULL"
+                    ansible.groups = groups
+                    ansible.sudo = true
+                    ansible.limit = 'all'
                 end
             end
         end
