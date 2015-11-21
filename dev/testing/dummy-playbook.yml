@@ -1,0 +1,8 @@
+---
+
+  - hosts: all
+    tasks:
+      - name: command | hostname | run
+        command: "hostname"
+        changed_when: false|bool
+

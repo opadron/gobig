@@ -61,9 +61,12 @@ function(add_vagrant_pod alias cfg)
                  COMMAND "${VAGRANT_EXECUTABLE}" up --no-provision)
 
         set(vagrant_file "${PROJECT_SOURCE_DIR}/dev/testing/Vagrantfile")
+        set(dummy_playbook
+            "${PROJECT_SOURCE_DIR}/dev/testing/dummy-playbook.yml")
         set(pod_file "${PROJECT_SOURCE_DIR}/dev/testing/${cfg}.yml")
 
         set_property(TEST vagrant_up_${alias} PROPERTY ENVIRONMENT
+                     "ANSIBLE_PLAYBOOK=${dummy_playbook}"
                      "VAGRANT_VAGRANTFILE=${vagrant_file}"
                      "VAGRANT_POD_FILE=${pod_file}")
 
@@ -73,6 +76,7 @@ function(add_vagrant_pod alias cfg)
                  COMMAND "${VAGRANT_EXECUTABLE}" destroy -f)
 
         set_property(TEST vagrant_destroy_${alias} PROPERTY ENVIRONMENT
+                     "ANSIBLE_PLAYBOOK=${dummy_playbook}"
                      "VAGRANT_VAGRANTFILE=${vagrant_file}"
                      "VAGRANT_POD_FILE=${pod_file}")
 
