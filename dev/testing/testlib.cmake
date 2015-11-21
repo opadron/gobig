@@ -140,7 +140,7 @@ function(add_ansible_test alias mode alias2 test_case)
                 add_test(NAME ansible_provision_${alias}
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          COMMAND "${PYTHON_COVERAGE_EXECUTABLE}"
-                                 run -p --append "--rcfile=${py_coverage_rc}"
+                                 run --append "--rcfile=${py_coverage_rc}"
                                  "--source=${PROJECT_SOURCE_DIR}/filter_plugins"
                                  "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
                                      --become -u vagrant
@@ -192,7 +192,7 @@ function(add_ansible_test alias mode alias2 test_case)
             add_test(NAME ansible_unit_${alias}
                      WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                      COMMAND "${PYTHON_COVERAGE_EXECUTABLE}"
-                             run -p --append "--rcfile=${py_coverage_rc}"
+                             run --append "--rcfile=${py_coverage_rc}"
                              "--source=${PROJECT_SOURCE_DIR}/filter_plugins"
                              "${ANSIBLE_PLAYBOOK_EXECUTABLE}"
                                  --become -u vagrant
