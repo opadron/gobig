@@ -89,9 +89,7 @@ Vagrant.configure(2) do |config|
             node.vm.provider "libvirt" do |virt|
                 virt.memory = params["memory"] || 2048
                 virt.cpus = params["cpus"] || 2
-
-                virt.graphics_type = "none"
-                virt.machine_arch = "x86_64"
+                virt.domain_type = "qemu"
                 virt.nested = true
 
                 if params.has_key?("mount")
