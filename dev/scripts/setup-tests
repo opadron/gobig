@@ -72,7 +72,7 @@ $PIP ansible             \
 
 echo "EMULATION? $EMULATION"
 if [ "$EMULATION" '=' "YES" ] ; then
-    virsh net-list &> /dev/null
+    virsh net-list
     if [ "$?" '!=' '0' ] ; then
         echo
         echo "Warning: emulation is enabled, but your current shell lacks"
