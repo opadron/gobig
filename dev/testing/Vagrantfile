@@ -52,7 +52,7 @@ Vagrant.configure(2) do |config|
 
             node.vm.hostname = "#{name}.#{domain}"
 
-            node.vm.provider "virtualbox" do |vb|
+            node.vm.provider :virtualbox do |vb|
                 vb.memory = params["memory"] || 2048
                 vb.cpus = params["cpus"] || 2
 
@@ -86,10 +86,9 @@ Vagrant.configure(2) do |config|
                 end
             end
 
-            node.vm.provider "libvirt" do |virt|
+            node.vm.provider :libvirt do |virt|
                 virt.memory = params["memory"] || 2048
                 virt.cpus = params["cpus"] || 2
-                virt.domain_type = "qemu"
                 virt.nested = true
 
                 if params.has_key?("mount")
