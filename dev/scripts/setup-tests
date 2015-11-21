@@ -70,7 +70,6 @@ $PIP ansible             \
      flake8-docstrings   \
      flake8-blind-except
 
-echo "EMULATION? $EMULATION"
 if [ "$EMULATION" '=' "YES" ] ; then
     if virsh net-list &> /dev/null ; then
         true
