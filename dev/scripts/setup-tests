@@ -52,8 +52,13 @@ if [ "$FULL_VIRTUALIZATION" '=' "YES" -o "$EMULATION" '=' "YES" ] ; then
         vagrant plugin install vagrant-mutate
         vagrant plugin install vagrant-rekey-ssh
 
-        vagrant box add ubuntu/trusty64
-        vagrant mutate ubuntu/trusty64 libvirt
+        vagrant box list | grep -q ubuntu/trusty64
+
+        if [ "$?" '!=' '0' ] ; then
+            vagrant box add ubuntu/trusty64
+        fi
+
+        vagrant mutate ubuntu/trusty64 libvirt --input-provider virtualbox
     fi
 fi
 
