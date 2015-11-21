@@ -26,6 +26,19 @@ __apt_wrap() {
     return $?
 }
 
+__dpkg_wrap() {
+    header="$1" ; shift
+    if [ "$header" '=' 'sudo' ] ; then
+        header="sudo -H"
+    fi
+    if [ "$header" '=' 'nosudo' ] ; then
+        header=""
+    fi
+
+    $header dpkg -i "$@"
+    return $?
+}
+
 __pip_wrap() {
     header="$1" ; shift
     if [ "$header" '=' 'sudo' ] ; then
@@ -49,8 +62,9 @@ if [ "$TRAVIS" '=' 'true' ] ; then
     echo "TRAVIS CI DETECTED"
     echo
 
-    check_set APT "true"
-    check_set PIP "__pip_wrap nosudo"
+    check_set APT  "true"
+    check_set DPKG "true"
+    check_set PIP  "__pip_wrap nosudo"
 
     check_set PYTHON_VERSION         "${TRAVIS_PYTHON_VERSION:0:1}"
     check_set CTEST_SOURCE_DIRECTORY "$TRAVIS_BUILD_DIR"
@@ -87,11 +101,13 @@ else
     # check for root
     if [ "$USER" '=' 'root' ] ; then
         echo "ROOT DETECTED"
-        check_set APT "__apt_wrap nosudo"
-        check_set PIP "__pip_wrap nosudo"
+        check_set APT  "__apt_wrap nosudo"
+        check_set DPKG "__dpkg_wrap nosudo"
+        check_set PIP  "__pip_wrap nosudo"
     fi
 
     check_set APT "__apt_wrap sudo"
+    check_set DPKG "__dpkg_wrap sudo"
     check_set PIP "__pip_wrap sudo"
 
     tmp="$( python --version 2>&1 | cut -d\  -f 2 )"

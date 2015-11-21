@@ -13,7 +13,23 @@ set -e
 $APT python-dev python-pip cmake
 
 if [ "$FULL_VIRTUALIZATION" '=' "YES" -o "$EMULATION" '=' "YES" ] ; then
-    $APT vagrant
+    $APT bsdtar            \
+         curl              \
+         openssh-client    \
+         ruby              \
+         ruby-childprocess \
+         ruby-erubis       \
+         ruby-i18n         \
+         ruby-log4r        \
+         ruby-net-scp      \
+         ruby-net-ssh
+
+    VAGRANT_URL="https://releases.hashicorp.com"
+    VAGRANT_URL="$VAGRANT_URL/vagrant/1.7.4/vagrant_1.7.4_x86_64.deb"
+
+    curl "$VAGRANT_URL" > vagrant.deb
+
+    $DPKG vagrant.deb
 
     if [ "$FULL_VIRTUALIZATION" '=' "YES" ] ; then
         $APT virtualbox
@@ -32,22 +48,12 @@ if [ "$FULL_VIRTUALIZATION" '=' "YES" -o "$EMULATION" '=' "YES" ] ; then
              # qemu-kvm        \
              # ubuntu-vm-builder
 
-        echo "testing libvirt functionality"
-        virsh -c "qemu:///system" list
-
-        if [ "$?" '!=' '0' ] ; then
-            (
-                echo "libvirt functionality test failed!"
-                echo "Make sure that you are a member of the libvirtd group."
-            ) 1>&2
-            exit 1
-        fi
-
         vagrant plugin install vagrant-libvirt
+        vagrant plugin install vagrant-mutate
+        vagrant plugin install vagrant-rekey-ssh
 
-
-
-        http://uec-images.ubuntu.com/releases/14.04/release/ubuntu-14.04-server-cloudimg-amd64-disk1.img
+        vagrant box add ubuntu/trusty64
+        vagrant box mutate ubuntu/trusty64 libvirt
     fi
 fi
 
