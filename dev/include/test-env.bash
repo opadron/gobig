@@ -25,7 +25,7 @@ if [ "$TRAVIS" '=' 'true' ] ; then
     check_set BRANCH                 "$TRAVIS_BRANCH"
     check_set PYTHON_COVERAGE        OFF
 else
-    # test to see if we are in a VM
+    # test to see if we are in a VirtualBox VM
     if [ -d /dev/disk/by-id ] ; then
         if (ls -1 /dev/disk/by-id/ | grep -q VBOX &> /dev/null) ; then
             echo "VIRTUALBOX DETECTED"
@@ -35,11 +35,12 @@ else
         fi
     fi
 
-    # check for root
-    if [ "$USER" '=' 'root' ] ; then
-        echo "ROOT DETECTED"
-        check_set APT_SUDO ""
-        check_set PIP_SUDO ""
+    # test to see if we are in a Xen VM
+    if [ -d /proc/xen ] ; then
+        echo "XEN DETECTED"
+        echo
+        check_set FULL_VIRTUALIZATION NO
+        check_set EMULATION           YES
     fi
 
     # check for a python virtualenv
