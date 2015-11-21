@@ -9,6 +9,7 @@ set(CTEST_SITE "$ENV{CTEST_SITE}")
 set(CTEST_BUILD_NAME
     "Linux-$ENV{BRANCH}-Ansible-$ENV{ANSIBLE_VERSION}-Boto-$ENV{BOTO_VERSION}")
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+set(CTEST_TEST_TIMEOUT 7200)
 
 ctest_start("Continuous")
 ctest_configure()

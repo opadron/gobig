@@ -5,6 +5,7 @@ project(GoBig NONE)
 
 include(CTest)
 enable_testing()
+set(CTEST_TEST_TIMEOUT 7200)
 
 set(PYTHON_VERSION "2.7" CACHE STRING "Python version used for testing")
 
