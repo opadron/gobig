@@ -70,16 +70,17 @@ $PIP ansible             \
      flake8-docstrings   \
      flake8-blind-except
 
+echo "EMULATION? $EMULATION"
 if [ "$EMULATION" '=' "YES" ] ; then
     virsh net-list &> /dev/null
-    if [ "$?" '!=' 0 ] ; then
+    if [ "$?" '!=' '0' ] ; then
         echo
         echo "Warning: emulation is enabled, but your current shell lacks"
         echo "permission to use libvirt.  Make sure that you are added to the"
         echo "group with access to libvirt (usually libvirtd) and either"
         echo "log out and relog in, or use sg when running the tests"
         echo
-        echo " e.g.: $ sg - libvirtd \"./dev/scripts/run-tests\""
+        echo " e.g.: \$ sg - libvirtd \"./dev/scripts/run-tests\""
         echo
     fi
 fi
