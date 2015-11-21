@@ -125,6 +125,11 @@ fi
 if [ "$FULL_VIRTUALIZATION" '=' 'YES' -o "$EMULATION" '=' 'YES' ] ; then
     check_set PYTHON_COVERAGE ON
 fi
+
+if [ "$EMULATION" '=' 'YES' ] ; then
+    check_set VAGRANT_DEFAULT_PROVIDER libvirt
+fi
+
 check_set PYTHON_COVERAGE OFF
 
 check_set BOTO_VERSION "$(
