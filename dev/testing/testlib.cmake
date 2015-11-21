@@ -54,7 +54,7 @@ function(add_python_style_test name input)
 endfunction()
 
 function(add_vagrant_pod alias cfg)
-    if(FULL_VIRTUALIZATION)
+    if(FULL_VIRTUALIZATION OR EMULATION)
 
         add_test(NAME vagrant_up_${alias}
                  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
@@ -102,7 +102,7 @@ function(add_ansible_test alias mode alias2 test_case)
         set(pod_alias ${alias2})
     endif()
 
-    if(FULL_VIRTUALIZATION)
+    if(FULL_VIRTUALIZATION OR EMULATION)
         get_property(pod_file TEST vagrant_meta_${pod_alias}
                      PROPERTY VAGRANT_POD_FILE)
     endif()
@@ -111,7 +111,7 @@ function(add_ansible_test alias mode alias2 test_case)
     set(site_yml "${cases}/${test_case}/site.yml")
     set(unit_yml "${cases}/${test_case}/unit.yml")
 
-    if(FULL_VIRTUALIZATION)
+    if(FULL_VIRTUALIZATION OR EMULATION)
         set(inventory "${PROJECT_SOURCE_DIR}/.vagrant/provisioners/ansible")
         set(inventory "${inventory}/inventory/vagrant_ansible_inventory")
     else()
@@ -135,7 +135,7 @@ function(add_ansible_test alias mode alias2 test_case)
                              "${site_yml}")
     endif()
 
-    if(FULL_VIRTUALIZATION)
+    if(FULL_VIRTUALIZATION OR EMULATION)
         if(PYTHON_COVERAGE)
                 add_test(NAME ansible_provision_${alias}
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
@@ -225,7 +225,7 @@ function(add_ansible_test alias mode alias2 test_case)
     set_property(TEST ansible_meta_${alias} APPEND PROPERTY
                  DEPENDS ansible_static_${alias})
 
-    if(FULL_VIRTUALIZATION)
+    if(FULL_VIRTUALIZATION OR EMULATION)
         set_property(TEST ansible_meta_${alias} APPEND PROPERTY
                      DEPENDS ansible_provision_${alias})
         set_property(TEST ansible_meta_${alias} APPEND PROPERTY
