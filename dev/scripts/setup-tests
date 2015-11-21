@@ -72,10 +72,9 @@ $PIP ansible             \
 
 echo "EMULATION? $EMULATION"
 if [ "$EMULATION" '=' "YES" ] ; then
-    virsh net-list
-    x="$?"
-    echo "$x"
-    if [ "$x" '!=' '0' ] ; then
+    if virsh net-list &> /dev/null ; then
+        true
+    else
         echo
         echo "Warning: emulation is enabled, but your current shell lacks"
         echo "permission to use libvirt.  Make sure that you are added to the"
